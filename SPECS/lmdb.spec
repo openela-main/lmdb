@@ -3,7 +3,7 @@
 
 Name:           lmdb
 Version:        0.9.24
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Memory-mapped key-value database
 
 License:        OpenLDAP
@@ -86,7 +86,7 @@ sed -e 's:@PREFIX@:%{_prefix}:g' \
 install -Dpm 0644 -t %{buildroot}%{_libdir}/pkgconfig lmdb.pc
 
 %check
-%if 0%{?rhel} == 6 && %{_arch} == "ppc64"
+%if 0%{?rhel} == 6 && "%{_arch}" == "ppc64"
   # rhel6 ppc64: skip unit tests
   exit 0
 %endif
@@ -122,6 +122,12 @@ popd
 
 
 %changelog
+* Wed Nov 02 2022 Radovan Sroka <rsroka@redhat.com> - 0.9.24-2
+RHEL 8.8.0 ERRATUM
+- Please put lmdb in RHEL 8 CRB
+- Rebuild
+- Resolves: rhbz#1972979
+
 * Thu May 07 2020 Radovan Sroka <rsroka@redhat.com> - 0.9.24-1
 - RHEL 8.3.0 ERRATUM
 - rebase to 0.9.24
