@@ -1,23 +1,23 @@
 Name:           lmdb
-Version:        0.9.29
-Release:        3%{?dist}
+Version:        0.9.32
+Release:        1%{?dist}
 Summary:        Memory-mapped key-value database
-License:        OpenLDAP
-URL:            http://symas.com/mdb
+License:        OLDAP-2.8
+URL:            https://www.symas.com/lmdb
 
 # Main source is retrieved from OpenLDAP GitLab
 %global forgeurl    https://git.openldap.org/openldap/openldap
 %global tag         LMDB_%{version}
-# Tag checkout includes commit in archive name
-%global commit      8ad7be2510414b9506ec9f9e24f24d04d9b04a1a
-# The files themselves are in several subdirectories and need to be prefixed wit this.
-%global archive_path libraries/lib%{name}
+%global archivename openldap-%{tag}
+%global archiveext  tar.gz
+%global archiveurl  %{forgeurl}/-/archive/%{tag}/%{archivename}.%{archiveext}
+%forgemeta
 
-Source0:        %{forgeurl}/-/archive/%{tag}.tar.gz
-Source1:        lmdb.pc.in
+Source:         %{forgesource}
+Source:         lmdb.pc.in
 # Patch description in the corresponding file
-Patch0:         lmdb-make.patch
-Patch1:         lmdb-s390-check.patch
+Patch:          lmdb-make.patch
+Patch:          lmdb-s390-check.patch
 
 BuildRequires:  make
 BuildRequires:  gcc
@@ -35,7 +35,7 @@ Summary:        Shared libraries for %{name}
 
 %description    libs
 The %{name}-libs package contains shared libraries necessary for running
-applications that use %{name}.
+applications that use the %{name} embedded database.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -54,8 +54,11 @@ The %{name}-doc package contains automatically generated documentation for %{nam
 
 
 %prep
-%autosetup -p1 -n openldap-%{tag}-%{commit}
+# forgeautosetup does not pass the -n argument
+%autosetup -n %{archivename} -p1
 
+# The files themselves are in several subdirectories and need to be prefixed wit this.
+%global archive_path libraries/lib%{name}
 
 %build
 pushd %{archive_path}
@@ -122,6 +125,9 @@ popd
 
 
 %changelog
+* Mon Jun 29 2026 Petr Lautrbach <lautrbach@redhat.com> - 0.9.32-1
+- Upgrade to version 0.9.32
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 0.9.29-3
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
